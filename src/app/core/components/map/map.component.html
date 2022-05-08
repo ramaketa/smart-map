@@ -1,6 +1,7 @@
 <div class="map-container">
     <div id="map" leaflet
          [leafletLayersControl]="layersControl"
-         [leafletOptions]="options">
+         [leafletOptions]="options"
+         (leafletMapReady)="onMapReady()">
     </div>
 </div>

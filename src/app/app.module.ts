@@ -6,31 +6,41 @@ import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { ru_RU } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import ru from '@angular/common/locales/ru';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
-import { IconsProviderModule } from './icons-provider.module';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzMenuModule } from 'ng-zorro-antd/menu';
+import {LoginComponent} from "./pages/login/login.component";
+import {NzGridModule} from "ng-zorro-antd/grid";
+import {NzCardModule} from "ng-zorro-antd/card";
+import {NzInputModule} from "ng-zorro-antd/input";
+import {NzButtonModule} from "ng-zorro-antd/button";
+import {NzNotificationService} from "ng-zorro-antd/notification";
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
 
 registerLocaleData(ru);
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoginComponent,
   ],
   imports: [
+    NzNotificationModule,
     BrowserModule,
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    IconsProviderModule,
-    NzLayoutModule,
-    NzMenuModule
+    NzGridModule,
+    NzCardModule,
+    ReactiveFormsModule,
+    NzInputModule,
+    NzButtonModule,
   ],
-  providers: [{ provide: NZ_I18N, useValue: ru_RU }],
+  providers: [
+    NzNotificationService,
+    { provide: NZ_I18N, useValue: ru_RU }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
