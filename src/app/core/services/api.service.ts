@@ -22,7 +22,7 @@ export class ApiService {
   }
 
   createField(field: CreateFieldModel): Observable<number> {
-    return this.httpClient.post<number>('/ndvi/field', field);
+    return this.httpClient.post<number>('/ndvi/field/', field);
   }
 
   deleteFieldByFieldId(fieldId: number): Observable<void> {

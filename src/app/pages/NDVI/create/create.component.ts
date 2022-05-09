@@ -35,12 +35,16 @@ export class CreateComponent implements OnInit {
         longitude: coordinate.lng,
       })
     }
+    coordinateList.push({
+      latitude: event[0][0]?.lat,
+      longitude: event[0][0]?.lng,
+    })
     const newField: CreateFieldModel = new CreateFieldModel(
       this.fieldName, this.authService.userDTO, coordinateList
     );
     this.apiService.createField(newField).subscribe(
       (fieldId) => {
-          this.router.navigate([`/field/${fieldId}`])
+          this.router.navigate([`/field/${fieldId}`]).then(() => window.location.reload())
           this.utilsService.successMessage('Поле успешно создано', '');
       },
       () => this.utilsService.errorMessage(),
