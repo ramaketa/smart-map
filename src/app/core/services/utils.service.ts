@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {NzNotificationPlacement, NzNotificationService} from "ng-zorro-antd/notification";
+import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +8,8 @@ import {NzNotificationPlacement, NzNotificationService} from "ng-zorro-antd/noti
 export class UtilsService {
   placement: NzNotificationPlacement = 'topRight';
 
-  constructor(private notification: NzNotificationService) {}
+  constructor(private notification: NzNotificationService,
+              private sanitizer: DomSanitizer) {}
 
   defaultMessage(title: string, message: string): void {
     this.notification.blank(
@@ -16,6 +18,7 @@ export class UtilsService {
       { nzPlacement: this.placement }
     );
   }
+
   errorMessage(title: string = 'Извините, что-то пошло не так',
                message: string = 'Попробуйте снова, либо обратитесь в поддержку'): void {
     this.notification.error(
@@ -24,6 +27,7 @@ export class UtilsService {
       { nzPlacement: this.placement }
     );
   }
+
   successMessage(title: string, message: string): void {
     this.notification.success(
       title,
@@ -38,5 +42,10 @@ export class UtilsService {
       message,
       { nzPlacement: this.placement }
     );
+  }
+
+  getImageUrlFromBlobResponse(blobImage: Blob): SafeUrl {
+    let objectURL = 'data:image/jpeg;base64,' + blobImage;
+    return this.sanitizer.bypassSecurityTrustUrl(objectURL);
   }
 }

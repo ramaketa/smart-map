@@ -17,6 +17,8 @@ import {NzInputModule} from "ng-zorro-antd/input";
 import {NzButtonModule} from "ng-zorro-antd/button";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import { NzNotificationModule } from 'ng-zorro-antd/notification';
+import {LeafletModule} from "@asymmetrik/ngx-leaflet";
+import { LeafletDrawModule } from '@asymmetrik/ngx-leaflet-draw';
 
 registerLocaleData(ru);
 
@@ -37,6 +39,8 @@ registerLocaleData(ru);
     ReactiveFormsModule,
     NzInputModule,
     NzButtonModule,
+    LeafletModule,
+    LeafletDrawModule
   ],
   providers: [
     NzNotificationService,

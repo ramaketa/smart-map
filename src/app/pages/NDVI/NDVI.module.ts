@@ -9,18 +9,23 @@ import {NzMenuModule} from "ng-zorro-antd/menu";
 import {IconsProviderModule} from "../../icons-provider.module";
 import {CommonModule} from "@angular/common";
 import { FieldComponent } from './field/field.component';
+import { CreateComponent } from './create/create.component';
+import {NzInputModule} from "ng-zorro-antd/input";
+import {FormsModule} from "@angular/forms";
 
 
 @NgModule({
-    imports: [
-        NDVIRoutingModule,
-        CoreModule,
-        NzLayoutModule,
-        IconsProviderModule,
-        NzMenuModule,
-        CommonModule
-    ],
-  declarations: [NDVIComponent, FieldComponent],
+  imports: [
+    NDVIRoutingModule,
+    CoreModule,
+    NzLayoutModule,
+    IconsProviderModule,
+    NzMenuModule,
+    CommonModule,
+    NzInputModule,
+    FormsModule
+  ],
+  declarations: [NDVIComponent, FieldComponent, CreateComponent],
   exports: [NDVIComponent]
 })
 export class NDVIModule { }

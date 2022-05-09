@@ -1,0 +1,3 @@
+<input type="text" nz-input placeholder="Название поля" [(ngModel)]="fieldName">
+<!-- TODO: Сделать основным - чекбокс-->
+<app-map (onFieldCreate)="createField($event)" [draw]="true"></app-map>

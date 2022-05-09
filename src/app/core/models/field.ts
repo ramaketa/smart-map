@@ -1,7 +1,7 @@
 export interface Field {
   fieldId: number;
   name: string;
-  isDefault: boolean;
+  default: boolean;
   externalId: string;
   sowingDate?: null;
   coordinateList: Coorditate[],
@@ -9,10 +9,11 @@ export interface Field {
 }
 
 export interface Coorditate {
-  coordinateId: number;
   latitude: number;
   longitude: number;
-  field: number;
+
+  field?: number;
+  coordinateId?: number;
 }
 
 export interface NdviData {

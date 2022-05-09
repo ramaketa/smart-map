@@ -27,9 +27,9 @@ export class NDVIComponent implements OnInit  {
           this.fieldList = data;
           this.fieldService.setFieldList(data);
           for (const field of data) {
-            if (field.isDefault) {
+            if (field.default) {
               this.fieldService.defaultField = field;
-              this.router.navigate([`/account/${field.fieldId}`])
+              this.router.navigate([`/field/${field.fieldId}`])
             }
           }
         }),

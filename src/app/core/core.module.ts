@@ -7,9 +7,10 @@ import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { AuthInterceptor } from "./interceptor/auth.interceptor";
 import { AuthGuard } from "./guards/auth.guard";
 import { ApiService } from "./services/api.service";
+import {LeafletDrawModule} from "@asymmetrik/ngx-leaflet-draw";
 
 @NgModule({
-  imports: [LeafletModule],
+    imports: [LeafletModule, LeafletDrawModule],
   declarations: [MapComponent],
   exports: [MapComponent],
   providers: [
