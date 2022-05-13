@@ -1,5 +1,9 @@
 export interface NDVIFilter {
-  observationDateFrom: string;
-  observationDateTo: string;
-  fieldIdList: number[];
+  fieldIdList?: number[];
+  ndviDataStatusEnumList?: NDVIDataStatusType[];
+
+  observationDateFrom?: string;
+  observationDateTo?: string;
 }
+
+export type NDVIDataStatusType = 'PROCESS' | 'ERROR' | 'SUCCESS';

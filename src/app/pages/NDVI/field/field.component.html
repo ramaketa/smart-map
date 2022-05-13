@@ -1,1 +1,36 @@
 <app-map *ngIf="field" [field]="field" [draw]="false"></app-map>
+
+
+<div class="subsection">
+  <div class="choose-date">
+    <nz-date-picker
+      [nzDisabledDate]="disabledStartDate"
+      nzFormat="dd.MM.yyyy"
+      [(ngModel)]="startValue"
+      nzPlaceHolder="От"
+    ></nz-date-picker>
+
+    <nz-date-picker
+      #endDatePicker
+      [nzDisabledDate]="disabledEndDate"
+      nzFormat="dd.MM.yyyy"
+      [(ngModel)]="endValue"
+      nzPlaceHolder="До"
+    ></nz-date-picker>
+
+    <button nz-button nzType="primary" (click)="getActualData()"
+            [disabled]="!startValue || !endValue || isLoading">Получить</button>
+  </div>
+  <div class="chart" *ngIf="chartData[0].series.length > 0">
+    <ngx-charts-line-chart
+      [view]="view"
+      [showXAxisLabel]="true"
+      [showYAxisLabel]="true"
+      [xAxis]="xAxis"
+      [yAxis]="yAxis"
+      xAxisLabel="Дата"
+      yAxisLabel="NDVI"
+      [results]="chartData">
+    </ngx-charts-line-chart>
+  </div>
+</div>

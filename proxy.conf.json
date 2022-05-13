@@ -1,7 +1,7 @@
 {
   "/ndvi/*": {
     "target": "https://ndvi-manager.visdom.tech",
-    "secure": true,
+    "secure": false,
     "logLevel": "debug",
     "changeOrigin": true
   }

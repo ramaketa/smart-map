@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ApiService} from "../../core/services/api.service";
 import {AuthService} from "../../core/services/auth.service";
 import {Field} from "../../core/models/field";
-import {Router} from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import {FieldService} from "../../core/services/field.service";
 
 @Component({
@@ -17,6 +17,7 @@ export class NDVIComponent implements OnInit  {
 
   constructor(private apiService: ApiService,
               private router: Router,
+              private route: ActivatedRoute,
               private fieldService: FieldService,
               private authService: AuthService) { }
 
@@ -26,12 +27,12 @@ export class NDVIComponent implements OnInit  {
         ((data: Field[]) => {
           this.fieldList = data;
           this.fieldService.setFieldList(data);
-          for (const field of data) {
-            if (field.default) {
-              this.fieldService.defaultField = field;
-              this.router.navigate([`/field/${field.fieldId}`])
-            }
-          }
+          // for (const field of data) {
+          //   if (field.default) {
+          //     this.fieldService.defaultField = field;
+          //     this.router.navigate([`/field/${field.fieldId}`])
+          //   }
+          // }
         }),
         ((error) => console.log(error))
       )

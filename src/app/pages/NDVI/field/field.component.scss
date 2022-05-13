@@ -1,0 +1,16 @@
+.subsection {
+  display: flex;
+  flex-direction: row;
+
+  margin-top: 2rem;
+
+  & .choose-date {
+    display: flex;
+    flex-direction: column;
+    margin-left: 0.5rem;
+
+    & nz-date-picker {
+      margin-bottom: 1rem;
+    }
+  }
+}

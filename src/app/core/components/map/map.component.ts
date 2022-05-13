@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 
 import {latLng, tileLayer, imageOverlay, FeatureGroup, featureGroup} from "leaflet";
 
@@ -12,6 +12,8 @@ import {Field} from "../../models/field";
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit, AfterViewInit {
+
+  @ViewChild('map') map!: ElementRef;
 
   @Input() field!: Field;
   @Input() draw!: boolean;

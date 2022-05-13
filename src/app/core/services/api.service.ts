@@ -5,6 +5,7 @@ import {Field} from "../models/field";
 import {CreateFieldModel} from "../models/create-field-model";
 import {NDVIFilter} from "../models/NDVI-filter.model";
 import {NDVIResponse} from "../models/NDVI-response.model";
+import { ProcessingRequest } from "../models/processing-request.model";
 
 @Injectable({
   providedIn: 'root'
@@ -35,5 +36,13 @@ export class ApiService {
 
   getNDVIImageById(ndviDataId: number): Observable<Blob> {
     return this.httpClient.get<Blob>(`/ndvi/field/file/${ndviDataId}`);
+  }
+
+  getProcessingData(fieldId: number, startDate: string, endDate: string): Observable<number> {
+    return this.httpClient.post<number>(`/ndvi/field/processing?fieldId=${fieldId}&startDate=${startDate}&endDate=${endDate}`, {})
+  }
+
+  getProcessingRequest(processingId: number): Observable<ProcessingRequest> {
+    return this.httpClient.get<ProcessingRequest>(`/ndvi/field/processing/request/${processingId}`);
   }
 }
