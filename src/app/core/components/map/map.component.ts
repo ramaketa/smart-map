@@ -1,27 +1,42 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 
 import {latLng, tileLayer, imageOverlay, FeatureGroup, featureGroup} from "leaflet";
 
 import * as L from "leaflet";
 import * as Draw from 'leaflet-draw'
-import {Field} from "../../models/field";
+import { Field, NdviData } from "../../models/field";
+import { Observable, Subscription } from "rxjs";
+import { ApiService } from "../../services/api.service";
+import { UtilsService } from "../../services/utils.service";
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnInit, AfterViewInit {
-
-  @ViewChild('map') map!: ElementRef;
-
+export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() field!: Field;
   @Input() draw!: boolean;
+  @Input() events!: Observable<void>;
   @Output() onFieldCreate = new EventEmitter<any>();
+
+  private eventsSubscription!: Subscription;
 
   options: any;
   layersControl: any;
   zoom = 15;
+
+  map: any;
 
   imageUrl!: string;
 
@@ -37,7 +52,8 @@ export class MapComponent implements OnInit, AfterViewInit {
   };
 
 
-  constructor() {
+  constructor(private apiService: ApiService,
+              private utilsService: UtilsService) {
   }
 
   ngOnInit(): void {
@@ -71,26 +87,47 @@ export class MapComponent implements OnInit, AfterViewInit {
         overlays: this.overlaysGroup
       }
     }
+
+    this.eventsSubscription = this.events.subscribe((event: any) => this.updateMap(event));
+  }
+
+  updateMap(event: NdviData): void {
+    this.addImageToMap(event);
   }
 
   ngAfterViewInit(): void {
   }
 
-  onMapReady(map: any): void {
-    this.layersControl.baseLayers.MapBox.addTo(map)
+  addImageToMap(ndviData: NdviData): void {
+    // map.fitBounds(this.imageOverlay.getBounds());
 
-    this.imageBounds = [];
+    this.apiService.getNDVIImageById(ndviData.ndviDataId)
+      .subscribe(
+        (data) => {
+          this.layersControl.overlays.overlays.clearLayers();
+          imageOverlay(<string>this.utilsService.getImageUrlFromBlobResponse(data), this.imageBounds).addTo(this.overlaysGroup);
+          this.layersControl.overlays.overlays.addTo(this.map);
+        },
+        (error) => {
+          this.utilsService.errorMessage();
+          console.error(error);
+        }
+      )
+  }
+
+  onMapReady(map: any): void {
+    this.layersControl.baseLayers.MapBox.addTo(map);
+    this.map = map;
 
     if (!this.draw) {
-
+      this.imageBounds = [];
       for (const coordinate of this.field.coordinateList) {
         this.imageBounds.push(
           [coordinate.latitude, coordinate.longitude]
         )
       }
-      // map.fitBounds(this.imageOverlay.getBounds());
-      imageOverlay(<string>this.field.ndviDataList.pop()?.imageUrl, this.imageBounds).addTo(this.overlaysGroup)
-      this.layersControl.overlays.overlays.addTo(map);
+      // @ts-ignore
+      this.addImageToMap(this.field.ndviDataList.pop());
     }
 
     if (this.draw) {
@@ -123,5 +160,9 @@ export class MapComponent implements OnInit, AfterViewInit {
   public onDrawCreated(e: any) {
     this.onFieldCreate.emit(e.layer.editing.latlngs[0]);
     this.drawnItems.addLayer((e).layer);
+  }
+
+  ngOnDestroy() {
+    this.eventsSubscription.unsubscribe();
   }
 }

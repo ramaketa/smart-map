@@ -22,15 +22,11 @@ export class LoginComponent implements OnInit {
   ) {
   }
 
-  user!: User;
-
-  login(): void {
-    this.authService.checkUserExist(this.user).subscribe(
+  login(user: User): void {
+    this.authService.checkUserExist(user).subscribe(
       ((data: UserDTO) => {
         if (data.backUserId && data.active) {
-          this.authService.login(data, this.user);
-          this.authService.userDTO = data;
-          this.router.navigate(['/account'])
+          this.authService.login(data, user);
         }
       }),
       ((error: any) => console.log('err', error))
@@ -48,8 +44,7 @@ export class LoginComponent implements OnInit {
         phone: this.authForm.get('phone')?.value,
         password: this.authForm.get('password')?.value
       }
-      this.user = new User(user);
-      this.login();
+      this.login(user);
     }
   }
 

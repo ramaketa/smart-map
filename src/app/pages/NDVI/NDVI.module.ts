@@ -16,6 +16,8 @@ import { NzDatePickerModule } from "ng-zorro-antd/date-picker";
 import { NzWaveModule } from "ng-zorro-antd/core/wave";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { LineChartModule } from "@swimlane/ngx-charts";
+import { NzModalModule } from "ng-zorro-antd/modal";
+import { NzTabsModule } from "ng-zorro-antd/tabs";
 
 
 @NgModule({
@@ -31,7 +33,9 @@ import { LineChartModule } from "@swimlane/ngx-charts";
     NzDatePickerModule,
     NzWaveModule,
     NzButtonModule,
-    LineChartModule
+    LineChartModule,
+    NzModalModule,
+    NzTabsModule
   ],
   declarations: [NDVIComponent, FieldComponent, CreateComponent],
   exports: [NDVIComponent]

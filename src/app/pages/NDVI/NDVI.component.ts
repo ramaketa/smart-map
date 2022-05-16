@@ -22,6 +22,7 @@ export class NDVIComponent implements OnInit  {
               private authService: AuthService) { }
 
   ngOnInit() {
+    // @ts-ignore
     this.apiService.getFieldList(this.authService.userDTO.backUserId)
       .subscribe(
         ((data: Field[]) => {
@@ -36,6 +37,10 @@ export class NDVIComponent implements OnInit  {
         }),
         ((error) => console.log(error))
       )
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 
 }

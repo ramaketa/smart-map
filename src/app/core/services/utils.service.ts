@@ -45,7 +45,6 @@ export class UtilsService {
   }
 
   getImageUrlFromBlobResponse(blobImage: Blob): SafeUrl {
-    let objectURL = 'data:image/jpeg;base64,' + blobImage;
-    return this.sanitizer.bypassSecurityTrustUrl(objectURL);
+    return window.URL.createObjectURL(blobImage);
   }
 }

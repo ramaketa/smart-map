@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {Field} from "../../../core/models/field";
+import { Field, NdviData } from "../../../core/models/field";
 import {FieldService} from "../../../core/services/field.service";
-import {ActivatedRoute} from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ApiService } from "../../../core/services/api.service";
 import { UtilsService } from "../../../core/services/utils.service";
 import { NzDatePickerComponent } from "ng-zorro-antd/date-picker";
 
 import * as moment from 'moment';
-import { Subscription, switchMap, timer } from "rxjs";
+import { Subject, Subscription, switchMap, timer } from "rxjs";
 import { ProcessingRequestEnum } from "../../../core/models/processing-request.model";
 import { NDVIFilter } from "../../../core/models/NDVI-filter.model";
 
@@ -30,15 +30,12 @@ export class FieldComponent implements OnInit {
   isLoading: boolean = false;
   receiveStatusSubscription!: Subscription;
 
+  mapUpdateSubject: Subject<any> = new Subject<any>();
+
   NDVIFilter!: NDVIFilter;
 
-  chartData: any[] = [
-    {
-      name: 'NDVI',
-      series: []
-    }
-  ];
-  view: [number, number] = [700, 300];
+  chartData: any[] =[];
+  view: [number, number] = [document.body.clientWidth / 1.5, 300];
 
   xAxis: boolean = true;
   yAxis: boolean = true;
@@ -47,6 +44,7 @@ export class FieldComponent implements OnInit {
 
   constructor(private fieldService: FieldService,
               private apiService: ApiService,
+              private router: Router,
               private utilsService: UtilsService,
               private route: ActivatedRoute) {
     this.currentFieldId = Number(this.route.snapshot.paramMap.get('id'));
@@ -55,7 +53,11 @@ export class FieldComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.currentFieldId = Number(this.route.snapshot.paramMap.get('id'));
-      this.getField(this.currentFieldId);
+      if (this.currentFieldId) {
+        this.getField(this.currentFieldId);
+      } else {
+        this.router.navigate(['/create'])
+      }
     })
   }
 
@@ -65,6 +67,7 @@ export class FieldComponent implements OnInit {
         (data) => {
           this.field = data;
           this.getDataForChart();
+          this.mapUpdateSubject.next(this.field.ndviDataList.pop())
         },
         () => {
           this.utilsService.errorMessage('Возникла ошибка при получении поля', 'Что-то пошло не так')
@@ -73,12 +76,20 @@ export class FieldComponent implements OnInit {
   }
 
   getDataForChart(): void {
+    const newData = [
+      {
+        name: 'NDVI',
+        series: []
+      }]
     for (const ndviData of this.field.ndviDataList) {
-      this.chartData[0].series.push({
+      newData[0].series.push({
+        // @ts-ignore
         name: moment(ndviData.observationDate, 'YYYY-MM-DD').format('DD.MM.YYYY'),
+        // @ts-ignore
         value: ndviData.meanNDVI
       })
     }
+    this.chartData = [...newData];
   }
 
   // getNDVIForField(fieldId: number) {
@@ -117,8 +128,8 @@ export class FieldComponent implements OnInit {
     this.apiService.getProcessingData(this.field.fieldId, startDate, endDate)
       .subscribe(
         (data) => {
-          if (data) {
-            this.receiveStatusProcessingRequest(data);
+          if (data.status === 'SUCCESS') {
+            this.receiveStatusProcessingRequest(data.data);
             return;
           }
           this.isLoading = false;
@@ -159,5 +170,17 @@ export class FieldComponent implements OnInit {
           }
         }
       )
+  }
+
+  getNDVIDate(date: string): string {
+    return moment(date, 'YYYY-MM-DD').format('DD.MM.YYYY');
+  }
+
+  getLastIndex(): number {
+    return this.field?.ndviDataList?.length - 1 || 0
+  }
+
+  setNDVIData(ndviData: NdviData): void {
+    this.mapUpdateSubject.next(ndviData)
   }
 }

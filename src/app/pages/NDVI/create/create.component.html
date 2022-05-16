@@ -1,3 +1,11 @@
-<input type="text" nz-input placeholder="Название поля" [(ngModel)]="fieldName">
 <!-- TODO: Сделать основным - чекбокс-->
+<h2>Режим добавления поля</h2>
 <app-map (onFieldCreate)="createField($event)" [draw]="true"></app-map>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Добавление нового поля" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"
+          [nzOkDisabled]="!this.fieldName">
+  <ng-container *nzModalContent>
+    <h3>Укажите название поля</h3>
+    <input type="text" nz-input placeholder="Название поля" [(ngModel)]="fieldName">
+  </ng-container>
+</nz-modal>

@@ -1,9 +1,10 @@
 export interface UserDTO {
-  backUserId: number;
+  backUserId?: number;
   phone: string;
   name: string;
   surname: string;
-  mail: string;
-  registrationDate: string;
-  active: boolean;
+  mail?: string;
+  registrationDate?: string;
+  password: string;
+  active?: boolean;
 }

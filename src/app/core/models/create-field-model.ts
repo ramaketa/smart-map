@@ -11,6 +11,7 @@ export class CreateFieldModel {
   constructor(name: string, backUser: UserDTO, coordinateList: Coorditate[]) {
     this.name = name;
     this.backUser = {
+      // @ts-ignore
       backUserId: backUser.backUserId,
     };
     this.coordinateList = coordinateList;

@@ -1,5 +1,11 @@
-<app-map *ngIf="field" [field]="field" [draw]="false"></app-map>
-
+<nz-tabset *ngIf="field && field.ndviDataList.length > 0" [nzSelectedIndex]="getLastIndex()">
+  <nz-tab *ngFor="let ndviData of field.ndviDataList"
+          [nzTitle]="getNDVIDate(ndviData.observationDate)"
+          (nzClick)="setNDVIData(ndviData)"
+  >
+  </nz-tab>
+</nz-tabset>
+<app-map *ngIf="field" [field]="field" [draw]="false" [events]="mapUpdateSubject.asObservable()"></app-map>
 
 <div class="subsection">
   <div class="choose-date">

@@ -10,7 +10,7 @@ import {UserDTO} from "../models/userDTO";
 })
 export class AuthService {
 
-  private user!: User;
+  user!: User;
   userDTO!: UserDTO;
 
   constructor(private router: Router,
@@ -31,6 +31,9 @@ export class AuthService {
       localStorage.setItem('authorization', JSON.stringify(user));
     }
     localStorage.setItem('ndviUser', JSON.stringify(userDTO));
+
+    this.userDTO = userDTO;
+    this.router.navigate(['/account'])
   }
 
   checkUserExist(user: User): Observable<UserDTO> {
@@ -38,11 +41,12 @@ export class AuthService {
   }
 
   logout(): void {
-    this.user = new User({} as User);
+    // @ts-ignore
+    this.user = undefined;
     localStorage.removeItem('authorization');
     localStorage.removeItem('ndviUser');
 
-    this.router.navigate(['/login'], )
+    window.location.reload();
   }
 
   isAuthenticated(): boolean {
@@ -51,6 +55,10 @@ export class AuthService {
 
   getBasicAuthAuthorization(): string {
     return !!this.user?.btoa ? this.user.btoa : '';
+  }
+
+  register(user: UserDTO): Observable<number> {
+    return this.httpClient.post<number>(`/ndvi/user/signup`, user);
   }
 
 

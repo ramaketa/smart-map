@@ -1,0 +1,35 @@
+<nz-card class="login-form">
+  <form nz-form [formGroup]="registerForm">
+    <div class="login-form__title">Регистрация</div>
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Введите логин!">
+        <nz-input-group nzPrefixIcon="user">
+          <input type="text" nz-input formControlName="phone" placeholder="Логин"/>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Введите Имя!">
+        <nz-input-group nzPrefixIcon="user">
+          <input type="text" nz-input formControlName="name" placeholder="Имя"/>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Введите Фамилию!">
+        <nz-input-group nzPrefixIcon="user">
+          <input type="text" nz-input formControlName="surname" placeholder="Фамилия"/>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Введите пароль!">
+        <nz-input-group nzPrefixIcon="lock">
+          <input type="password" nz-input formControlName="password" placeholder="Пароль"/>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'" (click)="submitForm()">Войти</button>
+    <button nz-button class="login-form-button login-form-margin" [nzType]="'default'" routerLink="/login">Уже есть аккаунт</button>
+  </form>
+</nz-card>

@@ -14,20 +14,33 @@ import {Router} from "@angular/router";
 export class CreateComponent implements OnInit {
 
   fieldName!: string;
+  isVisible = false;
+
+  fieldEvent: any;
 
   constructor(private apiService: ApiService,
               private authService: AuthService,
               private router: Router,
               private utilsService: UtilsService) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  handleCancel(): void {
+    this.fieldEvent = undefined;
+    this.fieldName = '';
+    this.isVisible = false;
+  }
+
+  handleOk(): void {
+    this.apiCreate(this.fieldEvent);
   }
 
   createField(event: any): void {
-    if (!this.fieldName) {
-      this.utilsService.warningMessage('Необходимо указать название поля!', 'Ошибка заполнения');
-      return;
-    }
+    this.fieldEvent = event;
+    this.isVisible = true;
+  }
+
+  apiCreate(event: any): void {
     const coordinateList: Coorditate[] = [];
     for (const coordinate of event[0]) {
       coordinateList.push({
@@ -43,9 +56,14 @@ export class CreateComponent implements OnInit {
       this.fieldName, this.authService.userDTO, coordinateList
     );
     this.apiService.createField(newField).subscribe(
-      (fieldId) => {
-          this.router.navigate([`/field/${fieldId}`]).then(() => window.location.reload())
+      (data) => {
+        if (data.status === 'SUCCESS') {
+          this.router.navigate([`/field/${data.data}`]).then(() => window.location.reload())
           this.utilsService.successMessage('Поле успешно создано', '');
+        }
+        if (data.status === 'FIELD_ADD_ERROR') {
+          this.utilsService.errorMessage('Ошибка при создании поля')
+        }
       },
       () => this.utilsService.errorMessage(),
     );

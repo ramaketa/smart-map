@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Field} from "../models/field";
 import {CreateFieldModel} from "../models/create-field-model";
 import {NDVIFilter} from "../models/NDVI-filter.model";
 import {NDVIResponse} from "../models/NDVI-response.model";
 import { ProcessingRequest } from "../models/processing-request.model";
+import { ApiResponse } from "../models/api-response.model";
 
 @Injectable({
   providedIn: 'root'
@@ -22,12 +23,12 @@ export class ApiService {
     return this.httpClient.get<Field>(`/ndvi/field/${fieldId}`);
   }
 
-  createField(field: CreateFieldModel): Observable<number> {
-    return this.httpClient.post<number>('/ndvi/field/', field);
+  createField(field: CreateFieldModel): Observable<ApiResponse<number>> {
+    return this.httpClient.post<ApiResponse<number>>('/ndvi/field/', field);
   }
 
-  deleteFieldByFieldId(fieldId: number): Observable<void> {
-    return this.httpClient.delete<void>(`/ndvi/field/${fieldId}`);
+  deleteFieldByFieldId(fieldId: number): Observable<ApiResponse<void>> {
+    return this.httpClient.delete<ApiResponse<void>>(`/ndvi/field/${fieldId}`);
   }
 
   getNDVIForField(NDVIFilter: NDVIFilter): Observable<NDVIResponse[]> {
@@ -35,11 +36,12 @@ export class ApiService {
   }
 
   getNDVIImageById(ndviDataId: number): Observable<Blob> {
-    return this.httpClient.get<Blob>(`/ndvi/field/file/${ndviDataId}`);
+    // @ts-ignore
+    return this.httpClient.get<Blob>(`/ndvi/field/file/${ndviDataId}`, { responseType: 'blob' });
   }
 
-  getProcessingData(fieldId: number, startDate: string, endDate: string): Observable<number> {
-    return this.httpClient.post<number>(`/ndvi/field/processing?fieldId=${fieldId}&startDate=${startDate}&endDate=${endDate}`, {})
+  getProcessingData(fieldId: number, startDate: string, endDate: string): Observable<ApiResponse<number>> {
+    return this.httpClient.post<ApiResponse<number>>(`/ndvi/field/processing?fieldId=${fieldId}&startDate=${startDate}&endDate=${endDate}`, {})
   }
 
   getProcessingRequest(processingId: number): Observable<ProcessingRequest> {

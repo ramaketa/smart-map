@@ -1,5 +1,5 @@
 <nz-card class="login-form">
-  <form nz-form [formGroup]="authForm" (ngSubmit)="submitForm()">
+  <form nz-form [formGroup]="authForm">
     <div class="login-form__title">Вход</div>
     <nz-form-item>
       <nz-form-control nzErrorTip="Введите логин!">
@@ -15,6 +15,7 @@
         </nz-input-group>
       </nz-form-control>
     </nz-form-item>
-    <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">Войти</button>
+    <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'" (click)="submitForm()">Войти</button>
+    <button nz-button class="login-form-button login-form-margin" [nzType]="'default'" routerLink="/register">Регистрация</button>
   </form>
 </nz-card>

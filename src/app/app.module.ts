@@ -19,6 +19,8 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import {LeafletModule} from "@asymmetrik/ngx-leaflet";
 import { LeafletDrawModule } from '@asymmetrik/ngx-leaflet-draw';
+import { NzFormModule } from "ng-zorro-antd/form";
+import { RegisterComponent } from "./pages/register/register.component";
 
 registerLocaleData(ru);
 
@@ -26,22 +28,24 @@ registerLocaleData(ru);
   declarations: [
     AppComponent,
     LoginComponent,
+    RegisterComponent,
   ],
-  imports: [
-    NzNotificationModule,
-    BrowserModule,
-    FormsModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    NzGridModule,
-    NzCardModule,
-    ReactiveFormsModule,
-    NzInputModule,
-    NzButtonModule,
-    LeafletModule,
-    LeafletDrawModule
-  ],
+    imports: [
+        NzNotificationModule,
+        BrowserModule,
+        FormsModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        NzGridModule,
+        NzCardModule,
+        ReactiveFormsModule,
+        NzInputModule,
+        NzButtonModule,
+        LeafletModule,
+        LeafletDrawModule,
+        NzFormModule
+    ],
   providers: [
     NzNotificationService,
     { provide: NZ_I18N, useValue: ru_RU }],
