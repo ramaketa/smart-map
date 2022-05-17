@@ -55,18 +55,20 @@ export class CreateComponent implements OnInit {
     const newField: CreateFieldModel = new CreateFieldModel(
       this.fieldName, this.authService.userDTO, coordinateList
     );
+    this.utilsService.loading = true;
+    this.isVisible = false;
     this.apiService.createField(newField).subscribe(
       (data) => {
         if (data.status === 'SUCCESS') {
           this.router.navigate([`/field/${data.data}`]).then(() => window.location.reload())
-          this.utilsService.successMessage('Поле успешно создано', '');
+          this.utilsService.successMessage(data.message, '');
         }
         if (data.status === 'FIELD_ADD_ERROR') {
-          this.utilsService.errorMessage('Ошибка при создании поля')
+          this.utilsService.errorMessage(data.message)
         }
       },
       () => this.utilsService.errorMessage(),
-    );
+    ).add(() => this.utilsService.loading = false);
   }
 
 }

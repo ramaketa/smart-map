@@ -55,3 +55,9 @@ nz-form-control {
     margin-bottom: 0;
   }
 }
+
+.logout .ant-menu-submenu-title {
+  &:hover {
+    color: #02bff0 !important;
+  }
+}

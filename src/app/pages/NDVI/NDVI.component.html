@@ -20,11 +20,14 @@
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="'/create/'">+ Добавить</a>
           </li>
-          <li nz-menu-item>
-            <a (click)="logout()">Выйти</a>
-          </li>
         </ul>
       </li>
+      <ul nz-menu nzMode="inline" (click)="showSettingsPopup()">
+        <li class="logout" nz-submenu nzTitle="Настройки" nzIcon="setting"></li>
+      </ul>
+      <ul nz-menu nzMode="inline" (click)="logout()">
+        <li class="logout" nz-submenu nzTitle="Выйти" nzIcon="logout"></li>
+      </ul>
     </ul>
   </nz-sider>
   <nz-layout>
@@ -39,9 +42,21 @@
       </div>
     </nz-header>
     <nz-content>
+      <axi-loader *ngIf="isLoading"></axi-loader>
       <div class="inner-content">
           <router-outlet></router-outlet>
       </div>
     </nz-content>
   </nz-layout>
 </nz-layout>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Настройки полей" (nzOnCancel)="isVisible = !isVisible"
+          nzOkDanger nzOkText="Удалить" (nzOnOk)="deleteField()" [nzOkDisabled]="!selectedField || deleteLoading">
+  <ng-container *nzModalContent>
+    <h3>Список полей</h3>
+
+    <label class="checkbox" *ngFor="let field of fieldList" nz-checkbox [nzChecked]="selectedField === field"
+           (nzCheckedChange)="setCheckSelected($event, field)">{{field.name}}</label>
+  </ng-container>
+</nz-modal>
+

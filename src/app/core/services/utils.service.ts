@@ -1,6 +1,9 @@
 import {Injectable} from '@angular/core';
 import {NzNotificationPlacement, NzNotificationService} from "ng-zorro-antd/notification";
 import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
+import { Coorditate } from "../models/field";
+import { latLng, LatLngBoundsExpression } from "leaflet";
+import { Subject } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +11,21 @@ import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 export class UtilsService {
   placement: NzNotificationPlacement = 'topRight';
 
+  isLoading$ = new Subject<boolean>();
+  private isLoading = false;
+
   constructor(private notification: NzNotificationService,
               private sanitizer: DomSanitizer) {}
+
+
+  set loading(state: boolean) {
+    this.isLoading = state;
+    this.isLoading$.next(state);
+  }
+
+  get loading(): boolean {
+    return this.isLoading;
+  }
 
   defaultMessage(title: string, message: string): void {
     this.notification.blank(
@@ -46,5 +62,15 @@ export class UtilsService {
 
   getImageUrlFromBlobResponse(blobImage: Blob): SafeUrl {
     return window.URL.createObjectURL(blobImage);
+  }
+
+  getPolygonLatLngs(coordinateList: Coorditate[]): any {
+    const latLng = [];
+    for (const coordinate of coordinateList) {
+      latLng.push(
+        [coordinate.latitude, coordinate.longitude]
+      )
+    }
+    return latLng;
   }
 }

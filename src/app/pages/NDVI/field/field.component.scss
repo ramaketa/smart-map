@@ -16,4 +16,12 @@
       margin-bottom: 1rem;
     }
   }
+
+  & .empty-chart {
+    &__title {
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+    &__suggest {}
+  }
 }

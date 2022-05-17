@@ -8,11 +8,13 @@ import { AuthInterceptor } from "./interceptor/auth.interceptor";
 import { AuthGuard } from "./guards/auth.guard";
 import { ApiService } from "./services/api.service";
 import {LeafletDrawModule} from "@asymmetrik/ngx-leaflet-draw";
+import { AxiLoaderComponent } from './components/axi-loader/axi-loader.component';
+import { NzSpinModule } from "ng-zorro-antd/spin";
 
 @NgModule({
-    imports: [LeafletModule, LeafletDrawModule],
-  declarations: [MapComponent],
-  exports: [MapComponent],
+  imports: [LeafletModule, LeafletDrawModule, NzSpinModule],
+  declarations: [MapComponent, AxiLoaderComponent],
+    exports: [MapComponent, AxiLoaderComponent],
   providers: [
     ApiService,
     AuthService,

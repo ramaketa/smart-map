@@ -1,42 +1,53 @@
-<nz-tabset *ngIf="field && field.ndviDataList.length > 0" [nzSelectedIndex]="getLastIndex()">
-  <nz-tab *ngFor="let ndviData of field.ndviDataList"
-          [nzTitle]="getNDVIDate(ndviData.observationDate)"
-          (nzClick)="setNDVIData(ndviData)"
-  >
-  </nz-tab>
-</nz-tabset>
-<app-map *ngIf="field" [field]="field" [draw]="false" [events]="mapUpdateSubject.asObservable()"></app-map>
+<ng-container *ngIf="showField">
+  <nz-tabset *ngIf="field && field.ndviDataList.length > 0" [nzSelectedIndex]="getLastIndex()">
+    <nz-tab *ngFor="let ndviData of field.ndviDataList"
+            [nzTitle]="getNDVIDate(ndviData.observationDate)"
+            (nzClick)="setNDVIData(ndviData)"
+    >
+    </nz-tab>
+  </nz-tabset>
+  <app-map *ngIf="field" [field]="field" [draw]="false" [events]="mapUpdateSubject.asObservable()"
+           [onMapChange]="onMapChange.asObservable()"></app-map>
 
-<div class="subsection">
-  <div class="choose-date">
-    <nz-date-picker
-      [nzDisabledDate]="disabledStartDate"
-      nzFormat="dd.MM.yyyy"
-      [(ngModel)]="startValue"
-      nzPlaceHolder="От"
-    ></nz-date-picker>
+  <div class="subsection">
+    <div class="choose-date">
+      <nz-date-picker
+        [nzDisabledDate]="disabledStartDate"
+        nzFormat="dd.MM.yyyy"
+        [(ngModel)]="startValue"
+        nzPlaceHolder="От"
+      ></nz-date-picker>
 
-    <nz-date-picker
-      #endDatePicker
-      [nzDisabledDate]="disabledEndDate"
-      nzFormat="dd.MM.yyyy"
-      [(ngModel)]="endValue"
-      nzPlaceHolder="До"
-    ></nz-date-picker>
+      <nz-date-picker
+        #endDatePicker
+        [nzDisabledDate]="disabledEndDate"
+        nzFormat="dd.MM.yyyy"
+        [(ngModel)]="endValue"
+        nzPlaceHolder="До"
+      ></nz-date-picker>
 
-    <button nz-button nzType="primary" (click)="getActualData()"
-            [disabled]="!startValue || !endValue || isLoading">Получить</button>
+      <button nz-button nzType="primary" (click)="getActualData()"
+              [disabled]="!startValue || !endValue || isLoading">Получить
+      </button>
+    </div>
+    <div class="chart" *ngIf="chartData[0] && chartData[0].series.length > 0; else emptyChartTemplate">
+      <ngx-charts-line-chart
+        [view]="view"
+        [showXAxisLabel]="true"
+        [showYAxisLabel]="true"
+        [xAxis]="xAxis"
+        [yAxis]="yAxis"
+        xAxisLabel="Дата"
+        yAxisLabel="NDVI"
+        [results]="chartData">
+      </ngx-charts-line-chart>
+    </div>
   </div>
-  <div class="chart" *ngIf="chartData[0].series.length > 0">
-    <ngx-charts-line-chart
-      [view]="view"
-      [showXAxisLabel]="true"
-      [showYAxisLabel]="true"
-      [xAxis]="xAxis"
-      [yAxis]="yAxis"
-      xAxisLabel="Дата"
-      yAxisLabel="NDVI"
-      [results]="chartData">
-    </ngx-charts-line-chart>
-  </div>
-</div>
+
+  <ng-template #emptyChartTemplate>
+    <div class="empty-chart">
+      <p class="empty-chart__title">Здесь будет ваш график отображения данных NDVI по полю</p>
+      <p class="empty-chart__suggest">Для получения данных выберите необходимый промежуток и нажмите <b>Получить</b></p>
+    </div>
+  </ng-template>
+</ng-container>

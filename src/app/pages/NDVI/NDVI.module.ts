@@ -18,25 +18,27 @@ import { NzButtonModule } from "ng-zorro-antd/button";
 import { LineChartModule } from "@swimlane/ngx-charts";
 import { NzModalModule } from "ng-zorro-antd/modal";
 import { NzTabsModule } from "ng-zorro-antd/tabs";
+import { NzCheckboxModule } from "ng-zorro-antd/checkbox";
 
 
 @NgModule({
-  imports: [
-    NDVIRoutingModule,
-    CoreModule,
-    NzLayoutModule,
-    IconsProviderModule,
-    NzMenuModule,
-    CommonModule,
-    NzInputModule,
-    FormsModule,
-    NzDatePickerModule,
-    NzWaveModule,
-    NzButtonModule,
-    LineChartModule,
-    NzModalModule,
-    NzTabsModule
-  ],
+    imports: [
+        NDVIRoutingModule,
+        CoreModule,
+        NzLayoutModule,
+        IconsProviderModule,
+        NzMenuModule,
+        CommonModule,
+        NzInputModule,
+        FormsModule,
+        NzDatePickerModule,
+        NzWaveModule,
+        NzButtonModule,
+        LineChartModule,
+        NzModalModule,
+        NzTabsModule,
+        NzCheckboxModule
+    ],
   declarations: [NDVIComponent, FieldComponent, CreateComponent],
   exports: [NDVIComponent]
 })

@@ -27,9 +27,14 @@ export class LoginComponent implements OnInit {
       ((data: UserDTO) => {
         if (data.backUserId && data.active) {
           this.authService.login(data, user);
+          this.utilsService.defaultMessage('Добро пожаловать',
+            'Успешный вход в систему!');
         }
       }),
-      ((error: any) => console.log('err', error))
+      ((error: any) => {
+        this.utilsService.errorMessage('Возникла ошибка при входе')
+        console.log('err', error)
+      })
     );
   }
 

@@ -10,7 +10,7 @@ import {
   ViewChild
 } from '@angular/core';
 
-import {latLng, tileLayer, imageOverlay, FeatureGroup, featureGroup} from "leaflet";
+import { latLng, tileLayer, imageOverlay, FeatureGroup, featureGroup, control } from "leaflet";
 
 import * as L from "leaflet";
 import * as Draw from 'leaflet-draw'
@@ -18,6 +18,7 @@ import { Field, NdviData } from "../../models/field";
 import { Observable, Subscription } from "rxjs";
 import { ApiService } from "../../services/api.service";
 import { UtilsService } from "../../services/utils.service";
+import layers = control.layers;
 
 @Component({
   selector: 'app-map',
@@ -28,9 +29,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() field!: Field;
   @Input() draw!: boolean;
   @Input() events!: Observable<void>;
+  @Input() onMapChange!: Observable<void>;
   @Output() onFieldCreate = new EventEmitter<any>();
 
   private eventsSubscription!: Subscription;
+  private onMapChangeSubscription!: Subscription;
 
   options: any;
   layersControl: any;
@@ -88,7 +91,20 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
 
-    this.eventsSubscription = this.events.subscribe((event: any) => this.updateMap(event));
+    if (this.events) {
+      this.eventsSubscription = this.events.subscribe((event: any) => this.updateMap(event));
+    }
+
+    if (this.onMapChange) {
+      this.onMapChangeSubscription = this.onMapChange.subscribe((field: any) => this.changeMap(field));
+    }
+  }
+
+  changeMap(field: Field): void {
+    this.field = field;
+    this.ngOnInit();
+    this.onMapReady(this.map);
+    // this.layersControl.p
   }
 
   updateMap(event: NdviData): void {
@@ -101,18 +117,21 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   addImageToMap(ndviData: NdviData): void {
     // map.fitBounds(this.imageOverlay.getBounds());
 
-    this.apiService.getNDVIImageById(ndviData.ndviDataId)
-      .subscribe(
-        (data) => {
-          this.layersControl.overlays.overlays.clearLayers();
-          imageOverlay(<string>this.utilsService.getImageUrlFromBlobResponse(data), this.imageBounds).addTo(this.overlaysGroup);
-          this.layersControl.overlays.overlays.addTo(this.map);
-        },
-        (error) => {
-          this.utilsService.errorMessage();
-          console.error(error);
-        }
-      )
+    if (ndviData) {
+      this.utilsService.loading = true;
+      this.apiService.getNDVIImageById(ndviData.ndviDataId)
+        .subscribe(
+          (data) => {
+            this.layersControl.overlays.overlays.clearLayers();
+            imageOverlay(<string>this.utilsService.getImageUrlFromBlobResponse(data), this.imageBounds).addTo(this.overlaysGroup);
+            this.layersControl.overlays.overlays.addTo(this.map);
+          },
+          (error) => {
+            this.utilsService.errorMessage();
+            console.error(error);
+          }
+        ).add(() => this.utilsService.loading = false)
+    }
   }
 
   onMapReady(map: any): void {
@@ -120,14 +139,23 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.map = map;
 
     if (!this.draw) {
-      this.imageBounds = [];
-      for (const coordinate of this.field.coordinateList) {
-        this.imageBounds.push(
-          [coordinate.latitude, coordinate.longitude]
-        )
-      }
+      const coordinates = this.utilsService.getPolygonLatLngs(this.field.coordinateList);
+      this.imageBounds = coordinates;
       // @ts-ignore
       this.addImageToMap(this.field.ndviDataList.pop());
+
+      this.map.eachLayer((layer: any) => {
+        if (layer._path != null || layer._layers) {
+          layer.remove()
+        }
+      })
+      if (!this.field.ndviDataList || this.field.ndviDataList.length === 0) {
+        // this.map.each
+        L.polygon(coordinates, {
+          color: 'blue',
+          opacity: 0.5
+        }).addTo(this.map);
+      }
     }
 
     if (this.draw) {
@@ -163,6 +191,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.eventsSubscription.unsubscribe();
+    this.eventsSubscription?.unsubscribe();
   }
 }
