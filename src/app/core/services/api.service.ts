@@ -40,8 +40,9 @@ export class ApiService {
     return this.httpClient.get<Blob>(`/ndvi/field/file/${ndviDataId}`, { responseType: 'blob' });
   }
 
-  getProcessingData(fieldId: number, startDate: string, endDate: string): Observable<ApiResponse<number>> {
-    return this.httpClient.post<ApiResponse<number>>(`/ndvi/field/processing?fieldId=${fieldId}&startDate=${startDate}&endDate=${endDate}`, {})
+  getProcessingData(fieldId: number, startDate: string, endDate: string, withPrediction = false): Observable<ApiResponse<number>> {
+    return this.httpClient.post<ApiResponse<number>>(
+      `/ndvi/field/processing?fieldId=${fieldId}&startDate=${startDate}&endDate=${endDate}&withPrediction=${withPrediction}`, {})
   }
 
   getProcessingRequest(processingId: number): Observable<ProcessingRequest> {

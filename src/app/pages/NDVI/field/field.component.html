@@ -1,13 +1,34 @@
 <ng-container *ngIf="showField">
   <nz-tabset *ngIf="field && field.ndviDataList.length > 0" [nzSelectedIndex]="getLastIndex()">
     <nz-tab *ngFor="let ndviData of field.ndviDataList"
-            [nzTitle]="getNDVIDate(ndviData.observationDate)"
+            [nzTitle]="titleTemplate"
             (nzClick)="setNDVIData(ndviData)"
     >
+      <ng-template #titleTemplate>
+        <i *ngIf="ndviData.type === 'PREDICTED'" nz-icon nzType="function"></i>
+        {{ getNDVIDate(ndviData.observationDate) }}
+      </ng-template>
     </nz-tab>
   </nz-tabset>
-  <app-map *ngIf="field" [field]="field" [draw]="false" [events]="mapUpdateSubject.asObservable()"
-           [onMapChange]="onMapChange.asObservable()"></app-map>
+  <div class="map-section">
+    <app-map *ngIf="field" [field]="field" [draw]="false" [events]="mapUpdateSubject.asObservable()"
+             [onMapChange]="onMapChange.asObservable()"></app-map>
+                                                                        <!--Скрыть историю-->
+    <div class="request-history" *ngIf="field && field.processingRequestList && true">
+      <h3>История запросов NDVI</h3>
+      <nz-list>
+        <nz-list-item *ngFor="let processingRequest of field.processingRequestList">
+          <nz-list-item-meta
+            [nzDescription]="getProcessRequestRange(processingRequest)"
+          >
+            <nz-list-item-meta-title>
+              <a>{{ getProcessRequestStatus(processingRequest) }}</a>
+            </nz-list-item-meta-title>
+          </nz-list-item-meta>
+        </nz-list-item>
+      </nz-list>
+    </div>
+  </div>
 
   <div class="subsection">
     <div class="choose-date">
@@ -26,9 +47,15 @@
         nzPlaceHolder="До"
       ></nz-date-picker>
 
-      <button nz-button nzType="primary" (click)="getActualData()"
-              [disabled]="!startValue || !endValue || isLoading">Получить
+      <label nz-checkbox [(ngModel)]="withPrediction">Дополнить спрогнозированным NDVI</label>
+
+      <br>
+      <button nz-button nzType="primary" (click)="getActualData()" [nzLoading]="hasProcessRequest || isLoading"
+              [disabled]="!startValue || !endValue || isLoading || hasProcessRequest">Получить
       </button>
+
+      <br>
+      <span nz-typography nzType="warning" *ngIf="hasProcessRequest">Дождитесь загрузки последнего запроса</span>
     </div>
     <div class="chart" *ngIf="chartData[0] && chartData[0].series.length > 0; else emptyChartTemplate">
       <ngx-charts-line-chart

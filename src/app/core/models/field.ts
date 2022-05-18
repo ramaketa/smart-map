@@ -1,3 +1,5 @@
+import { ProcessingRequest } from "./processing-request.model";
+
 export interface Field {
   fieldId: number;
   name: string;
@@ -6,6 +8,7 @@ export interface Field {
   sowingDate?: null;
   coordinateList: Coorditate[],
   ndviDataList: NdviData[],
+  processingRequestList: ProcessingRequest[]
 }
 
 export interface Coorditate {
@@ -22,6 +25,6 @@ export interface NdviData {
   imageUrl: string;
   meanNDVI: number;
   status: "SUCCESS" | "ERROR" | string;
-  type: string;
+  type: "AGRO" | "PREDICTED" | string;
   field: number
 }

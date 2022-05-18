@@ -61,3 +61,18 @@ nz-form-control {
     color: #02bff0 !important;
   }
 }
+
+
+.map-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+
+  & app-map {
+    width: 70%;
+  }
+
+  & .request-history {
+    width: 20%;
+  }
+}

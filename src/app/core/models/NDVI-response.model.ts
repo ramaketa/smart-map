@@ -6,6 +6,6 @@ export interface NDVIResponse {
   imageUrl: string;
   meanNDVI: number;
   status: NDVIDataStatusType;
-  type: "AGRO" | string;
+  type: "AGRO" | "PREDICTED" | string;
   field: any;
 }

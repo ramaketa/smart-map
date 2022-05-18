@@ -8,7 +8,7 @@ import { NzDatePickerComponent } from "ng-zorro-antd/date-picker";
 
 import * as moment from 'moment';
 import { Subject, Subscription, switchMap, timer } from "rxjs";
-import { ProcessingRequestEnum } from "../../../core/models/processing-request.model";
+import { ProcessingRequest, ProcessingRequestEnum } from "../../../core/models/processing-request.model";
 import { NDVIFilter } from "../../../core/models/NDVI-filter.model";
 
 @Component({
@@ -29,12 +29,16 @@ export class FieldComponent implements OnInit {
 
   isLoading: boolean = false;
   showField: boolean = false;
+
+  withPrediction: boolean = false;
+  hasProcessRequest: boolean = false;
   receiveStatusSubscription!: Subscription;
 
   mapUpdateSubject: Subject<any> = new Subject<any>();
   onMapChange: Subject<any> = new Subject<any>();
 
   NDVIFilter: NDVIFilter;
+  processingRequestEnum = ProcessingRequestEnum;
 
   chartData: any[] =[];
   view: [number, number] = [document.body.clientWidth / 1.5, 300];
@@ -81,6 +85,13 @@ export class FieldComponent implements OnInit {
               this.showField = true;
               this.utilsService.loading = false;
             }, 1000)
+          }
+
+          const processingRequestList = data?.processingRequestList?.filter((process) => process.processingRequestStatus === 'PROCESS')
+          this.hasProcessRequest = processingRequestList.length > 0
+
+          if (this.hasProcessRequest) {
+            this.receiveStatusProcessingRequest(processingRequestList[0].processingRequestId);
           }
         },
         () => {
@@ -132,16 +143,16 @@ export class FieldComponent implements OnInit {
     if (!this.startValue) {
       return false;
     }
-    return endValue > this.maxStartDate || endValue < this.minStartDate || endValue < this.startValue;
+    return endValue > this.maxStartDate || endValue < this.minStartDate || endValue < this.startValue
+      || Math.abs(moment(endValue).diff(moment(this.startValue), 'days')) > 30;
   };
 
   getActualData(): void {
     this.isLoading = true;
-    this.utilsService.loading = true
     const startDate = moment(this.startValue).format('YYYY-MM-DD');
     const endDate = moment(this.endValue).format('YYYY-MM-DD');
 
-    this.apiService.getProcessingData(this.field.fieldId, startDate, endDate)
+    this.apiService.getProcessingData(this.field.fieldId, startDate, endDate, this.withPrediction)
       .subscribe(
         (data) => {
           if (data.status === 'SUCCESS') {
@@ -155,11 +166,11 @@ export class FieldComponent implements OnInit {
           this.utilsService.errorMessage('Возникла ошибка при данных по полю', 'Что-то пошло не так');
           this.isLoading = false;
         }
-      ).add(() => this.utilsService.loading = false)
+      )
   }
 
   receiveStatusProcessingRequest(processingId: number): void {
-    this.utilsService.loading = true;
+    this.isLoading = true;
     this.receiveStatusSubscription = timer(0, 1000)
       .pipe(
         switchMap(() =>
@@ -170,8 +181,8 @@ export class FieldComponent implements OnInit {
         (data) => {
           if (data.processingRequestStatus !== 'PROCESS') {
             this.receiveStatusSubscription.unsubscribe();
+            this.hasProcessRequest = false;
             this.isLoading = false;
-            this.utilsService.loading = false;
           }
 
           if (data.processingRequestStatus === 'ERROR') {
@@ -203,6 +214,14 @@ export class FieldComponent implements OnInit {
 
   setNDVIData(ndviData: NdviData): void {
     this.mapUpdateSubject.next(ndviData)
+  }
+
+  getProcessRequestRange(processingRequest: ProcessingRequest): string {
+    return `${moment(processingRequest.startDate, 'YYYY-MM-DD').format('DD.MM.YYYY')} - ${moment(processingRequest.endDate, 'YYYY-MM-DD').format('DD.MM.YYYY')}`
+  }
+
+  getProcessRequestStatus(processingRequest: ProcessingRequest): string {
+    return this.processingRequestEnum[processingRequest.processingRequestStatus];
   }
 
   destroy(): void {
