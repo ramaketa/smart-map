@@ -12,13 +12,13 @@
       </a>
     </div>
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="Maps" nzIcon="dashboard">
+      <li nz-submenu nzOpen nzTitle="Карты" nzIcon="picture">
         <ul>
           <li nz-menu-item nzMatchRouter *ngFor="let field of fieldList">
             <a [routerLink]="'/field/' + field.fieldId">{{field.name}}</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a [routerLink]="'/create/'">+ Добавить</a>
+            <a [routerLink]="'/create/'"><i nz-icon nzType="plus" nzTheme="outline"></i> Добавить</a>
           </li>
         </ul>
       </li>
