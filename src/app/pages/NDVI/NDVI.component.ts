@@ -77,8 +77,9 @@ export class NDVIComponent implements OnInit  {
           }
           setTimeout(() => {
             this.utilsService.loading = false
-            window.location.reload();
-          }, 3000)
+            this.router.navigate(['/create'])
+              .then(() => window.location.reload());
+          }, 2000)
         },
         (error) => {
           console.error(error);

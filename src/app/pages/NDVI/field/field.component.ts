@@ -81,11 +81,11 @@ export class FieldComponent implements OnInit {
           this.getDataForChart();
           if (changeMap) {
             this.onMapChange.next(data);
-            setTimeout(() => {
-              this.showField = true;
-              this.utilsService.loading = false;
-            }, 1000)
           }
+          setTimeout(() => {
+            this.showField = true;
+            this.utilsService.loading = false;
+          }, 1000)
 
           const processingRequestList = data?.processingRequestList?.filter((process) => process.processingRequestStatus === 'PROCESS')
           this.hasProcessRequest = processingRequestList.length > 0
