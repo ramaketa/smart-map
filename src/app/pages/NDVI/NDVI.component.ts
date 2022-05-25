@@ -8,6 +8,7 @@ import { UtilsService } from "../../core/services/utils.service";
 import { Subscription } from "rxjs";
 import { Browser } from "leaflet";
 import win = Browser.win;
+import {UserDTO} from "../../core/models/userDTO";
 
 @Component({
   selector: 'app-ndvi',
@@ -23,6 +24,8 @@ export class NDVIComponent implements OnInit  {
   isLoading$: Subscription;
   selectedField: Field;
 
+  user: UserDTO;
+
   fieldList!: Field[]
 
   constructor(private apiService: ApiService,
@@ -35,6 +38,7 @@ export class NDVIComponent implements OnInit  {
   }
 
   ngOnInit() {
+    this.user = this.authService.userDTO;
     this.utilsService.loading = true;
     // @ts-ignore
     this.apiService.getFieldList(this.authService.userDTO.backUserId)

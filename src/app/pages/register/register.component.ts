@@ -57,7 +57,8 @@ export class RegisterComponent implements OnInit {
     })
     this.authService.register(userDTO).subscribe(
       (data) => {
-        this.utilsService.defaultMessage('Успешная регистрация', 'Доброе пожаловать!')
+        this.utilsService.defaultMessage('Успешная регистрация',
+          `Доброе пожаловать! ${userDTO.name} ${userDTO.surname}`)
         userDTO.backUserId = data;
         this.authService.login(userDTO, user);
       },
