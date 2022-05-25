@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { UtilsService } from "../../core/services/utils.service";
-import { AuthService } from "../../core/services/auth.service";
-import { UserDTO } from "../../core/models/userDTO";
-import { User } from "../../core/models/user.model";
-import { Router } from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {UtilsService} from "../../core/services/utils.service";
+import {AuthService} from "../../core/services/auth.service";
+import {UserDTO} from "../../core/models/userDTO";
+import {User} from "../../core/models/user.model";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-register',
@@ -19,7 +19,8 @@ export class RegisterComponent implements OnInit {
   constructor(private fb: FormBuilder,
               private router: Router,
               private authService: AuthService,
-              private utilsService: UtilsService) { }
+              private utilsService: UtilsService) {
+  }
 
   ngOnInit(): void {
     this.registerForm = this.fb.group({
@@ -57,7 +58,8 @@ export class RegisterComponent implements OnInit {
     this.authService.register(userDTO).subscribe(
       (data) => {
         this.utilsService.defaultMessage('Успешная регистрация', 'Доброе пожаловать!')
-          this.authService.login(userDTO, user)
+        userDTO.backUserId = data;
+        this.authService.login(userDTO, user);
       },
       () => {
         this.utilsService.errorMessage();
