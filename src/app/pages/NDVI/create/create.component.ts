@@ -66,6 +66,9 @@ export class CreateComponent implements OnInit {
         if (data.status === 'FIELD_ADD_ERROR') {
           this.utilsService.errorMessage(data.message)
         }
+        if (data.status === 'FIELD_AREA_ERROR') {
+          this.utilsService.errorMessage(data.message)
+        }
       },
       () => this.utilsService.errorMessage(),
     ).add(() => this.utilsService.loading = false);
