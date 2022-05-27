@@ -141,8 +141,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!this.draw) {
       const coordinates = this.utilsService.getPolygonLatLngs(this.field.coordinateList);
       this.imageBounds = coordinates;
-      // @ts-ignore
-      this.addImageToMap(this.field.ndviDataList.pop());
+      this.addImageToMap(this.field.ndviDataList[this.field.ndviDataList.length - 1]);
 
       this.map.eachLayer((layer: any) => {
         if (layer._path != null || layer._layers) {
